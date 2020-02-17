@@ -1,11 +1,13 @@
 let board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
 let count = 0;
+let callCount = 0;
 let winner = 0;
 let opponent = 'computer';
 let playerTurn = true;
 
 function setup() {
     createCanvas(450, 450).parent('canvas');
+    strokeWeight(4);
     document.getElementById("reset").onclick = function() {reset()};
     document.getElementById("human").onclick = function() {opponent = 'human'};
     document.getElementById("computer").onclick = function() {opponent = 'computer'};
@@ -16,16 +18,19 @@ function draw() {
     line(300, 0, 300, 450);
     line(0, 150, 450, 150);
     line(0, 300, 450, 300);
-
 }
 
 function drawCross(x = 0, y = 0) {
+    stroke('red');
     line(30 + x, 30 + y, 120 + x, 120 + y);
     line(120 + x, 30 + y, 30 + x, 120 + y);
+    stroke('black');
 }
 
 function drawCircle(x = 0, y = 0) {
+    stroke('blue');
     circle(75 + x, 75 + y, 90);
+    stroke('black');
 }
 
 
@@ -78,6 +83,7 @@ function firstAvailableComputerMove() {
 }
 
 function minimaxComputerMove(currentBoard, depth, isMaximising, isCross, firstCall) {
+    // console.log(callCount++)
     let bestScore;
     const boardScore = evaluateBoard(currentBoard);
     if ((depth === 0) || (boardScore !== 0)) return boardScore;
@@ -127,7 +133,7 @@ function minimaxComputerMove(currentBoard, depth, isMaximising, isCross, firstCa
 }
 
 function evaluateBoard(board) {
-    let result = 0
+    let result = 0;
     for (let i = 1; i <=2; i++) {
         if (board[0][0] === i && board[0][1] === i &&  board[0][2] === i) result = i;
         else if (board[1][0] === i && board[1][1] === i &&  board[1][2] === i) result = i;
@@ -145,15 +151,42 @@ function evaluateBoard(board) {
 
 function checkWin() {
     for (let i = 1; i <=2; i++) {
-        if (board[0][0] === i && board[0][1] === i &&  board[0][2] === i) winner = i;
-        else if (board[1][0] === i && board[1][1] === i &&  board[1][2] === i) winner = i;
-        else if (board[2][0] === i && board[2][1] === i &&  board[2][2] === i) winner = i;
-        else if (board[0][0] === i && board[1][0] === i &&  board[2][0] === i) winner = i;
-        else if (board[0][1] === i && board[1][1] === i &&  board[2][1] === i) winner = i;
-        else if (board[0][2] === i && board[1][2] === i &&  board[2][2] === i) winner = i;
-        else if (board[0][0] === i && board[1][1] === i &&  board[2][2] === i) winner = i;
-        else if (board[0][2] === i && board[1][1] === i &&  board[2][0] === i) winner = i;
+        if (board[0][0] === i && board[0][1] === i &&  board[0][2] === i) {
+            winner = i;
+            line(75, 0, 75, 450);
+        }
+        else if (board[1][0] === i && board[1][1] === i &&  board[1][2] === i) {
+            winner = i;
+            line(225, 0, 225, 450);
+        }
+        else if (board[2][0] === i && board[2][1] === i &&  board[2][2] === i) {
+            winner = i;
+            line(375, 0, 375, 450);
+        }
+        else if (board[0][0] === i && board[1][0] === i &&  board[2][0] === i) {
+            winner = i;
+            line(0, 75, 450, 75);
+        }
+        else if (board[0][1] === i && board[1][1] === i &&  board[2][1] === i) {
+            winner = i;
+            line(0, 225, 450, 225);
+        }
+        else if (board[0][2] === i && board[1][2] === i &&  board[2][2] === i) {
+            winner = i;
+            line(0, 375, 450, 375);
+        }
+        else if (board[0][0] === i && board[1][1] === i &&  board[2][2] === i) {
+            strokeWeight(2);
+            winner = i;
+            line(0, 0, 450, 450);
+        }
+        else if (board[0][2] === i && board[1][1] === i &&  board[2][0] === i) {
+            strokeWeight(2);
+            winner = i;
+            line(0, 450, 450, 0);
+        }
     }
+    strokeWeight(4);
     if (count === 9 && winner === 0) winner = 3;
     if (winner === 1) document.getElementById("result").innerHTML = "Xs Wins";
     if (winner === 2) document.getElementById("result").innerHTML = "Os Wins";
