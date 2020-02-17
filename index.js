@@ -55,7 +55,7 @@ function computerMove() {
     playerTurn = !playerTurn;
     let isCross = count % 2 === 0;
     // const [x, y] = firstAvailableComputerMove();
-    const [x, y] = minimaxComputerMove(board, 9 - count, true, isCross);
+    const [x, y] = minimaxComputerMove(board, 9 - count, isCross, isCross, true);
     board[x][y] = isCross ? 1 : 2;
     if (isCross) drawCross(x * 150, y * 150);
     else drawCircle(x * 150, y * 150);
@@ -77,13 +77,13 @@ function firstAvailableComputerMove() {
     return move;
 }
 
-function minimaxComputerMove(currentBoard, depth, isMaximising, isCross) {
+function minimaxComputerMove(currentBoard, depth, isMaximising, isCross, firstCall) {
+    let bestScore;
     const boardScore = evaluateBoard(currentBoard);
     if ((depth === 0) || (boardScore !== 0)) return boardScore;
-
     let bestMove;
     if (isMaximising) {
-        let bestScore = -500;
+        bestScore = -500;
         for (let x = 0; x <=2; x++) {
             for (let y = 0; y <= 2; y++) {
                 if (currentBoard[x][y] === 0) {
@@ -92,7 +92,7 @@ function minimaxComputerMove(currentBoard, depth, isMaximising, isCross) {
                     });
                     newBoard[x][y] = isCross ? 1 : 2;
                     const currentScore = minimaxComputerMove(newBoard, depth - 1, false, !isCross);
-                    if (currentScore >= bestScore) {
+                    if (currentScore > bestScore) {
                         bestScore = currentScore;
                         bestMove = [x, y];
                     }
@@ -100,7 +100,7 @@ function minimaxComputerMove(currentBoard, depth, isMaximising, isCross) {
             }
         }
     } else {
-        let bestScore = 500;
+        bestScore = 500;
         for (let x = 0; x <=2; x++) {
             for (let y = 0; y <= 2; y++) {
                 if (currentBoard[x][y] === 0) {
@@ -109,7 +109,7 @@ function minimaxComputerMove(currentBoard, depth, isMaximising, isCross) {
                     });
                     newBoard[x][y] = isCross ? 1 : 2;
                     const currentScore = minimaxComputerMove(newBoard, depth - 1, true, !isCross);
-                    if (currentScore <= bestScore) {
+                    if (currentScore < bestScore) {
                         bestScore = currentScore;
                         bestMove = [x, y];
                     }
@@ -117,7 +117,7 @@ function minimaxComputerMove(currentBoard, depth, isMaximising, isCross) {
             }
         }
     }
-    return bestMove;
+    return firstCall ? bestMove : bestScore;
 }
 
 function evaluateBoard(board) {
