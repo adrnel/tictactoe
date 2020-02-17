@@ -8,9 +8,15 @@
 }
 
 .button-container {
-    margin: 50px;
+    margin: 50px auto auto;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    max-width: 450px;
+}
+
+.radio-container {
+    display: flex;
+    align-items: center;
 }
 
 h1 {

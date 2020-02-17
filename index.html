@@ -5,6 +5,7 @@
         <script src="https://cdn.jsdelivr.net/npm/p5@0.10.2/lib/p5.js"></script>
         <script src="index.js"></script>
         <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" href="https://unpkg.com/picnic">
     </head>
     <body>
         <h1 id="result"></h1>
@@ -13,11 +14,11 @@
                 <!-- Our sketch will go here! -->
             </div>
             <div class="button-container">
-                <div>
-                    <input type="radio" id="human" name="player" value="human">
-                    <label for="human">Human</label><br>
-                    <input type="radio" id="computer" name="player" value="computer" checked="checked">
-                    <label for="computer">Computer</label><br>
+                <div class="radio-container">
+                    <input id="human" checked type='radio' name="player" value="human">
+                    <label for="human" class="checkable">Human</label>
+                    <input id="computer" type='radio' name="player" value="computer"  checked="checked">
+                    <label for="computer" class="checkable">Computer</label>
                 </div>
                 <button id="reset">New Game</button>
             </div>
