@@ -53,24 +53,88 @@ function mouseClicked(event) {
 
 function computerMove() {
     playerTurn = !playerTurn;
-    firstAvailableComputerMove();
+    let isCross = count % 2 === 0;
+    // const [x, y] = firstAvailableComputerMove();
+    const [x, y] = minimaxComputerMove(board, 9 - count, true, isCross);
+    board[x][y] = isCross ? 1 : 2;
+    if (isCross) drawCross(x * 150, y * 150);
+    else drawCircle(x * 150, y * 150);
     count = count + 1;
     checkWin();
 }
 
 function firstAvailableComputerMove() {
-    let isCross = count % 2 === 0;
+    let move;
     let playedTurn = false;
     for (let x = 0; x <=2; x++){
         for (let y = 0; y <=2; y++){
             if (board[x][y] === 0 && !playedTurn) {
-                board[x][y] = isCross ? 1 : 2;
+                move = [x,y];
                 playedTurn = true;
-                if (isCross) drawCross(x * 150, y * 150);
-                else drawCircle(x * 150, y * 150);
             }
         }
     }
+    return move;
+}
+
+function minimaxComputerMove(currentBoard, depth, isMaximising, isCross) {
+    const boardScore = evaluateBoard(currentBoard);
+    if ((depth === 0) || (boardScore !== 0)) return boardScore;
+
+    let bestMove;
+    if (isMaximising) {
+        let bestScore = -500;
+        for (let x = 0; x <=2; x++) {
+            for (let y = 0; y <= 2; y++) {
+                if (currentBoard[x][y] === 0) {
+                    const newBoard = currentBoard.map(function(row) {
+                        return row.slice();
+                    });
+                    newBoard[x][y] = isCross ? 1 : 2;
+                    const currentScore = minimaxComputerMove(newBoard, depth - 1, false, !isCross);
+                    if (currentScore >= bestScore) {
+                        bestScore = currentScore;
+                        bestMove = [x, y];
+                    }
+                }
+            }
+        }
+    } else {
+        let bestScore = 500;
+        for (let x = 0; x <=2; x++) {
+            for (let y = 0; y <= 2; y++) {
+                if (currentBoard[x][y] === 0) {
+                    const newBoard = currentBoard.map(function(row) {
+                        return row.slice();
+                    });
+                    newBoard[x][y] = isCross ? 1 : 2;
+                    const currentScore = minimaxComputerMove(newBoard, depth - 1, true, !isCross);
+                    if (currentScore <= bestScore) {
+                        bestScore = currentScore;
+                        bestMove = [x, y];
+                    }
+                }
+            }
+        }
+    }
+    return bestMove;
+}
+
+function evaluateBoard(board) {
+    let result = 0
+    for (let i = 1; i <=2; i++) {
+        if (board[0][0] === i && board[0][1] === i &&  board[0][2] === i) result = i;
+        else if (board[1][0] === i && board[1][1] === i &&  board[1][2] === i) result = i;
+        else if (board[2][0] === i && board[2][1] === i &&  board[2][2] === i) result = i;
+        else if (board[0][0] === i && board[1][0] === i &&  board[2][0] === i) result = i;
+        else if (board[0][1] === i && board[1][1] === i &&  board[2][1] === i) result = i;
+        else if (board[0][2] === i && board[1][2] === i &&  board[2][2] === i) result = i;
+        else if (board[0][0] === i && board[1][1] === i &&  board[2][2] === i) result = i;
+        else if (board[0][2] === i && board[1][1] === i &&  board[2][0] === i) result = i;
+    }
+    if (result === 1) return 1;
+    if (result === 2) return -1;
+    return 0
 }
 
 function checkWin() {
