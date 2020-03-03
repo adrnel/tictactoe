@@ -60,7 +60,7 @@ function computerMove() {
     playerTurn = !playerTurn;
     let isCross = count % 2 === 0;
     // const [x, y] = firstAvailableComputerMove();
-    const [x, y] = minimaxComputerMove(board, 9 - count, isCross, isCross, true);
+    const [x, y] = minimaxComputerMove(board, 9 - count, isCross, isCross, true, -500, 500);
     board[x][y] = isCross ? 1 : 2;
     if (isCross) drawCross(x * 150, y * 150);
     else drawCircle(x * 150, y * 150);
@@ -82,8 +82,12 @@ function firstAvailableComputerMove() {
     return move;
 }
 
-function minimaxComputerMove(currentBoard, depth, isMaximising, isCross, firstCall) {
+function minimaxComputerMove(currentBoard, depth, isMaximising, isCross, firstCall, alpha, beta) {
     // console.log(callCount++)
+    // without alpha beta pruning 549945
+    // with alpha beta pruning 157866
+    // 28.7% the amount of iterations as the non optimised one
+    // 3.48 times faster
     let bestScore;
     const boardScore = evaluateBoard(currentBoard);
     if ((depth === 0) || (boardScore !== 0)) return boardScore;
@@ -97,9 +101,11 @@ function minimaxComputerMove(currentBoard, depth, isMaximising, isCross, firstCa
                         return row.slice();
                     });
                     newBoard[x][y] = isCross ? 1 : 2;
-                    const currentScore = minimaxComputerMove(newBoard, depth - 1, false, !isCross);
+                    const currentScore = minimaxComputerMove(newBoard, depth - 1, false, !isCross, false, alpha, beta);
                     if (currentScore > bestScore) {
                         bestScore = currentScore;
+                        alpha = alpha > bestScore ? alpha : bestScore;
+                        if (beta <= alpha) break;
                         bestMove = [x, y];
                     } else if (currentScore === bestScore && Math.random() >= 0.5) {
                         bestScore = currentScore;
@@ -117,9 +123,11 @@ function minimaxComputerMove(currentBoard, depth, isMaximising, isCross, firstCa
                         return row.slice();
                     });
                     newBoard[x][y] = isCross ? 1 : 2;
-                    const currentScore = minimaxComputerMove(newBoard, depth - 1, true, !isCross);
+                    const currentScore = minimaxComputerMove(newBoard, depth - 1, true, !isCross, false, alpha, beta);
                     if (currentScore < bestScore) {
                         bestScore = currentScore;
+                        beta = beta < bestScore ? beta : bestScore;
+                        if (beta <= alpha) break;
                         bestMove = [x, y];
                     } else if (currentScore === bestScore && Math.random() >= 0.5) {
                         bestScore = currentScore;
