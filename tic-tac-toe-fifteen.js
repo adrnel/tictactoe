@@ -4,20 +4,13 @@ let callCount = 0;
 let winner = 0;
 let opponent = 'computer';
 let playerTurn = true;
-let playerStart = true;
 
 function setup() {
     createCanvas(450, 450).parent('canvas');
     strokeWeight(4);
     document.getElementById("reset").onclick = function() {reset()};
-    document.getElementById("human").onclick = function() {
-        opponent = 'human';
-        reset();
-    };
-    document.getElementById("computer").onclick = function() {
-        opponent = 'computer';
-        reset()
-    };
+    document.getElementById("human").onclick = function() {opponent = 'human'};
+    document.getElementById("computer").onclick = function() {opponent = 'computer'};
 }
 
 function draw() {
@@ -29,24 +22,22 @@ function draw() {
 
 function drawCross(x = 0, y = 0) {
     stroke('red');
-    line(30 + x, 30 + y, 120 + x, 120 + y);
-    line(120 + x, 30 + y, 30 + x, 120 + y);
+    textSize(100);
+    text('1', 45 + x, 110 + y);
     stroke('black');
 }
 
 function drawCircle(x = 0, y = 0) {
     stroke('blue');
-    circle(75 + x, 75 + y, 90);
+    textSize(100);
+    text('2', 48 + x, 110 + y);
     stroke('black');
 }
 
 
 function mouseClicked(event) {
-    if (count === 0) document.getElementById("result").innerHTML = "X's turn";
     if (winner === 0) {
-        const isComputer = opponent === 'computer';
-        if (isComputer) document.getElementById("result").innerHTML = "You are playing as X";
-        let isCross = isComputer ? true : count % 2 === 0;
+        let isCross = count % 2 === 0;
         let x = -1;
         let y = -1;
         if (mouseX > 0 && mouseX <= 150) x = 0;
@@ -57,10 +48,6 @@ function mouseClicked(event) {
         if (mouseY > 300 && mouseY <= 450) y = 2;
         if (x >= 0 && y >= 0 && board[x][y] === 0) {
             count = count + 1;
-            if (!isComputer) {
-                if (count === 0) document.getElementById("result").innerHTML = "X's turn";
-                else document.getElementById("result").innerHTML = count % 2 === 0 ? "X's turn" : "O's turn";
-            }
             playerTurn = !playerTurn;
             board[x][y] = isCross ? 1 : 2;
             if (isCross) drawCross(x * 150, y * 150);
@@ -72,7 +59,7 @@ function mouseClicked(event) {
 
 function computerMove() {
     playerTurn = !playerTurn;
-    let isCross = false;
+    let isCross = count % 2 === 0;
     // const [x, y] = firstAvailableComputerMove();
     const [x, y] = minimaxComputerMove(board, 9 - count, isCross, isCross, true, -500, 500);
     board[x][y] = isCross ? 1 : 2;
@@ -223,8 +210,7 @@ function reset() {
     board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
     count = 0;
     if (opponent === 'computer') {
-        playerStart = !playerStart;
-        playerTurn = playerStart;
+        playerTurn = Math.random() >= 0.5;
         if (!playerTurn) computerMove()
     }
 }

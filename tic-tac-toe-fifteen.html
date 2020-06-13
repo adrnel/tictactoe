@@ -3,22 +3,34 @@
     <head>
         <title>Tic Tac Toe</title>
         <script src="https://cdn.jsdelivr.net/npm/p5@0.10.2/lib/p5.js"></script>
-        <script src="index.js"></script>
+        <script src="tic-tac-toe-fifteen.js"></script>
         <link rel="stylesheet" type="text/css" href="style.css">
         <link rel="stylesheet" href="https://unpkg.com/picnic">
     </head>
     <body>
-        <h1 id="result"></h1>
+        <h1 id="result">Player Ones</h1>
         <div id="sketch-holder">
             <div id="canvas">
                 <!-- Our sketch will go here! -->
             </div>
+            <div class="number-container">
+                <span>1</span>
+                <span>1</span>
+                <span>1</span>
+                <span>1</span>
+                <span>1</span>
+                <span>1</span>
+                <span>1</span>
+                <span>1</span>
+                <span>1</span>
+                <span>1</span>
+            </div>
             <div class="button-container">
                 <div class="radio-container">
                     <input id="human" checked type='radio' name="player" value="human">
-                    <label for="human" class="checkable">Vs Human</label>
+                    <label for="human" class="checkable">Human</label>
                     <input id="computer" type='radio' name="player" value="computer"  checked="checked">
-                    <label for="computer" class="checkable">Vs Computer</label>
+                    <label for="computer" class="checkable">Computer</label>
                 </div>
                 <button id="reset">New Game</button>
             </div>
